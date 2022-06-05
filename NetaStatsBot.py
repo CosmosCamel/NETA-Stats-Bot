@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
 
+#By CamelJuno 🐪
+
 import discord
 import requests
 import random
@@ -11,26 +13,14 @@ import time
 from datetime import date,datetime
 
 client = discord.Client()
-def getJUNO2UST():
-  headers = {
-    'Host': 'rpc-juno.itastakers.com',
-    'Content-Type': 'application/json',
-  }
-  jsonData = {"jsonrpc":"2.0","id":genId(),"method":"abci_query","params":{"path":"/cosmwasm.wasm.v1.Query/SmartContractState","data":"0a3f6a756e6f3168756533646e72746766396c793266726e6e7666387a3575376532323463746334686b37776b733278756d65753361726a3672733976677a656312377b22746f6b656e315f666f725f746f6b656e325f7072696365223a7b22746f6b656e315f616d6f756e74223a2231303030303030227d7d","prove":False}}
-  a = requests.post('https://rpc-juno.itastakers.com/',headers=headers,json=jsonData,timeout=10)
-  if a.status_code == 200:
-    a = round(float(base64.b64decode(json.loads(a.text)['result']['response']['value']).split('"token2_amount":"'.encode('utf-8'),1)[1].split('"}'.encode('utf-8'),1)[0])/1000000,2)
-    return a
-  else:
-    getJUNO2UST()
 
 def getNETA2JUNO():
   headers = {
     'Host': 'rpc-juno.itastakers.com',
-    'Content-Type': 'application/json',
+    'Accept': '*/*'
   }
   jsonData = {"jsonrpc":"2.0","id":genId(),"method":"abci_query","params":{"path":"/cosmwasm.wasm.v1.Query/SmartContractState","data":"0a3f6a756e6f3165386e366368376d736b7334383765637a6e796561676d7a64356d6c327071397467656471743275363376726130713072396d71726a7936797312377b22746f6b656e325f666f725f746f6b656e315f7072696365223a7b22746f6b656e325f616d6f756e74223a2231303030303030227d7d","prove":False}}
-  a = requests.post('https://rpc-juno.itastakers.com/',headers=headers,json=jsonData,timeout=10)
+  a = requests.post('https://rpc-juno.itastakers.com/',headers=headers,json=jsonData,timeout=20)
   if a.status_code == 200:
     a = round(float(base64.b64decode(json.loads(a.text)['result']['response']['value']).split('"token1_amount":"'.encode('utf-8'),1)[1].split('"}'.encode('utf-8'),1)[0])/1000000,2)
     return a
@@ -40,9 +30,9 @@ def getNETA2JUNO():
 def getNETAOsmosis():
   headers = {
     'Host': 'api-osmosis.imperator.co',
-    'Content-Type': 'application/json',
+  'Accept': 'application/json, text/plain, */*'
   }
-  a = requests.get('https://api-osmosis.imperator.co/tokens/v1/NETA',headers=headers,timeout=10)
+  a = requests.get('https://api-osmosis.imperator.co/tokens/v2/NETA',headers=headers,timeout=20)
   if a.status_code == 200:
     a = json.loads(a.text)[0]
     return a
@@ -52,9 +42,9 @@ def getNETAOsmosis():
 def getNETAPriceJunoOsmosis():
   headers = {
     'Host': 'api-osmosis.imperator.co',
-    'Content-Type': 'application/json',
+    'Accept': 'application/json, text/plain, */*'
   }
-  a = requests.get('https://api-osmosis.imperator.co/pools/v1/632',headers=headers,timeout=10)
+  a = requests.get('https://api-osmosis.imperator.co/pools/v2/632',headers=headers,timeout=20)
   if a.status_code == 200:
     a = round(json.loads(a.text)[0]['price']/json.loads(a.text)[1]['price'],2)
     return a
@@ -64,10 +54,10 @@ def getNETAPriceJunoOsmosis():
 def getNETALiquidityJunoSwap():
   headers = {
     'Host': 'rpc-juno.itastakers.com',
-    'Content-Type': 'application/json',
+    'Accept': '*/*'
   }
   jsonData = {"jsonrpc":"2.0","id":genId(),"method":"abci_query","params":{"path":"/cosmwasm.wasm.v1.Query/SmartContractState","data":"0a3f6a756e6f3165386e366368376d736b7334383765637a6e796561676d7a64356d6c327071397467656471743275363376726130713072396d71726a79367973120b7b22696e666f223a7b7d7d","prove":False}}
-  z = requests.post('https://rpc-juno.itastakers.com/',headers=headers,json=jsonData,timeout=10)
+  z = requests.post('https://rpc-juno.itastakers.com/',headers=headers,json=jsonData,timeout=20)
   if z.status_code == 200:
     a = float(base64.b64decode(json.loads(z.text)['result']['response']['value']).split('"token1_reserve":"'.encode('utf-8'),1)[1].split('"'.encode('utf-8'),1)[0])/1000000
     b = float(base64.b64decode(json.loads(z.text)['result']['response']['value']).split('"token2_reserve":"'.encode('utf-8'),1)[1].split('"'.encode('utf-8'),1)[0])/1000000
@@ -75,32 +65,23 @@ def getNETALiquidityJunoSwap():
   else:
     getNETALiquidityJunoSwap()
 
-def getNETAClaimed():
-  headers = {
-    'Host': 'rpc-juno.itastakers.com',
-    'Content-Type': 'application/json',
-  }
-  jsonData = {"jsonrpc":"2.0","id":genId(),"method":"abci_query","params":{"path":"/cosmwasm.wasm.v1.Query/SmartContractState","data":"0a3f6a756e6f317376716d6a3863676d71777a61366137647876707433746577306767796e757a786570757734703576677473346570667a667773707a33796c77121d7b22746f74616c5f636c61696d6564223a7b227374616765223a317d7d","prove":False}}
-  a = requests.post('https://rpc-juno.itastakers.com/',headers=headers,json=jsonData,timeout=10)
-  if a.status_code == 200:
-    a = float(base64.b64decode(json.loads(a.text)['result']['response']['value']).split('{"total_claimed":"'.encode('utf-8'),1)[1].split('"}'.encode('utf-8'),1)[0])/1000000
-    return a
-  else:
-    getNETAClaimed()
-
 def getJUNOGecko():
   headers = {
     'Host': 'api.coingecko.com',
-    'Accept': '*/*',
+    'Accept': '*/*'
   }
   a = requests.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=juno-network',headers=headers,timeout=10)
   if a.status_code == 200:
     z = json.loads(a.text)[0]['current_price']
-    return z
+    if z == None:
+      getJUNOGecko()
+    else:
+      return z
   else:
     getJUNOGecko()
 
 def formatIt(hello):
+  hello = int(hello)
   suffixes = ["", "K", "M", "B", "T"]
   hello = str("{:,}".format(hello))
   commas = 0
@@ -123,18 +104,16 @@ async def on_ready():
   message = await client.get_channel(channelID).fetch_message(messageID)
   while(True):
     try:
-      NETAClaimed = getNETAClaimed()
+      NETAClaimed = 31886.6
       today = date.today().strftime("%B %d, %Y")
-      NETABurn = round(32950.0 - float(NETAClaimed),1)
-      JUNO2UST = getJUNO2UST()
       NETA2JUNO = getNETA2JUNO()
       NETA2JUNOOsmosis = getNETAPriceJunoOsmosis()
       JunoSwapLiquidity = getNETALiquidityJunoSwap()
       OsmosisStats = getNETAOsmosis()
-      NETAPriceJunoSwap = round(JUNO2UST*NETA2JUNO,2)
+      NETAPriceJunoSwap = round(getJUNOGecko()*NETA2JUNO,2)
       NETAPriceOsmosis = round(OsmosisStats['price'],2)
-      NETAMarketcap = formatIt(NETAClaimed*NETAPriceJunoSwap)
-      NETALiquidityOsmosis = formatIt(int(OsmosisStats['liquidity']))
+      NETAMarketcap = formatIt(NETAClaimed*NETAPriceOsmosis)
+      NETALiquidityOsmosis = formatIt(int(OsmosisStats['liquidity'])*2)
       NETALiquidityJunoSwap = formatIt(round(JunoSwapLiquidity[0]*getJUNOGecko()*2,2))
       airdropFile = open('HolderData.txt').readlines()
       originalHolders = airdropFile[0].strip()
@@ -143,8 +122,7 @@ async def on_ready():
       messageToBeSent = ':calendar: **'+today+'** :calendar:\n**__NETA Stats - Updates every 60 seconds__**\n\n'
       messageToBeSent = messageToBeSent+':moneybag: `Market Capitalization:` **$'+NETAMarketcap+'**\n'
       messageToBeSent = messageToBeSent+':briefcase: `Total Supply:` **'+str(NETAClaimed)+'**\n'
-      messageToBeSent = messageToBeSent+':fire: `Burned NETA:` **'+str(NETABurn)+'**\n'
-      messageToBeSent = messageToBeSent+'```Eligible Address Stats - Updates Hourly```:trophy: `Holders > 0.1 NETA:` **'+str(originalHolders)+' / 5372**\n:gem: `Holds full amount or more:` **'+str(fullHeld)+' / '+str(originalHolders)+'**\n:shopping_cart: `Total NETA held:` **'+str(NETAHeld)+' / '+str(NETAClaimed)+'**\n'
+      messageToBeSent = messageToBeSent+'```Airdrop Eligible Address Stats```:trophy: `Holders > 0.1 NETA:` **'+str(originalHolders)+' / 5372**\n:gem: `Holds full amount or more:` **'+str(fullHeld)+' / '+str(originalHolders)+'**\n:shopping_cart: `Total NETA held:` **'+str(NETAHeld)+' / '+str(NETAClaimed)+'**\n'
       messageToBeSent = messageToBeSent+'```DAO Stats```*Coming soon* :tm: \n'
       messageToBeSent = messageToBeSent+'```JunoSwap Stats```:dollar: `Price:` **$'+str(NETAPriceJunoSwap)+'**\n:coin: `Price/Juno:` **'+str(round(NETA2JUNO,2))+' Juno'+'**\n:test_tube: `Total Liquidity:` **$'+str(NETALiquidityJunoSwap)+'**\n'
       messageToBeSent = messageToBeSent+'```Osmosis Stats```:dollar: `Price:` **$'+str(NETAPriceOsmosis)+'**\n:coin: `Price/Juno:` **'+str(NETA2JUNOOsmosis)+' Juno'+'**\n:test_tube: `Total Liquidity:` **$'+str(NETALiquidityOsmosis)+'**\n\n'
